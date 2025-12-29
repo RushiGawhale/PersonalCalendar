@@ -1,30 +1,104 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Rushikesh’s Availability</title>
+    <title>🌈 My Availability</title>
 
     <link
       href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/readonly.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+    <style>
+      body {
+        font-family: "Poppins", system-ui;
+        background: linear-gradient(135deg, #fdfbfb, #ebedee);
+        text-align: center;
+        padding: 20px;
+      }
+
+      h1 {
+        margin-bottom: 5px;
+      }
+
+      #calendar {
+        max-width: 900px;
+        margin: auto;
+        background: white;
+        border-radius: 18px;
+        padding: 15px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      }
+
+      .fc-event {
+        border-radius: 10px;
+        font-size: 13px;
+        padding: 4px 6px;
+      }
+
+      .fc-month-1 #calendar {
+        background: #fdf6ec;
+      }
+      .fc-month-2 #calendar {
+        background: #f0f7ff;
+      }
+      .fc-month-3 #calendar {
+        background: #f3fbf6;
+      }
+      .fc-month-4 #calendar {
+        background: #fff5f7;
+      }
+      .fc-month-5 #calendar {
+        background: #f6f4ff;
+      }
+      .fc-month-6 #calendar {
+        background: #f2fbff;
+      }
+      .fc-month-7 #calendar {
+        background: #fff9f0;
+      }
+      .fc-month-8 #calendar {
+        background: #f4fff6;
+      }
+      .fc-month-9 #calendar {
+        background: #f7f7f7;
+      }
+      .fc-month-10 #calendar {
+        background: #fff4f4;
+      }
+      .fc-month-11 #calendar {
+        background: #f3f6ff;
+      }
+      .fc-month-12 #calendar {
+        background: #fdf7ff;
+      }
+    </style>
   </head>
 
   <body>
-    <h1>📅 Rushikesh’s Availability</h1>
-    <p class="subtitle">Here’s what my days look like ✨</p>
+    <h1>✨ My Availability</h1>
+    <p>Here’s how my days look 😊</p>
 
     <div id="calendar"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
     <script>
+      const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co";
+      const SUPABASE_ANON_KEY = "YOUR_PUBLIC_ANON_KEY";
+
+      const supabaseClient = supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
       function applyMonthColor(calendar) {
         const month = calendar.getDate().getMonth() + 1;
         document.body.className = `fc-month-${month}`;
       }
-      document.addEventListener("DOMContentLoaded", function () {
-        const events =
-          JSON.parse(localStorage.getItem("myCalendarEvents")) || [];
+
+      document.addEventListener("DOMContentLoaded", async function () {
+        const { data } = await supabaseClient.from("events").select("*");
 
         const calendar = new FullCalendar.Calendar(
           document.getElementById("calendar"),
@@ -35,8 +109,10 @@
               center: "title",
               right: "",
             },
-            events: events,
-            datesSet(info) {
+            events: data,
+            editable: false,
+            selectable: false,
+            datesSet() {
               applyMonthColor(calendar);
             },
           }
@@ -44,8 +120,6 @@
 
         calendar.render();
         applyMonthColor(calendar);
-
-        calendar.render();
       });
     </script>
   </body>
