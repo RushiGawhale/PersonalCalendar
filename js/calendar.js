@@ -1,52 +1,42 @@
 /***********************
  * SUPABASE CONFIG
  ***********************/
-const supabaseURL = "https://ubrpgbnspdlgpcdlwluc.supabase.co";
-const supabaseKey =
+/************** SUPABASE **************/
+const SUPABASE_URL = "https://ubrpgbnspdlgpcdlwluc.supabase.co";
+const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVicnBnYm5zcGRsZ3BjZGx3bHVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwMjEyNTEsImV4cCI6MjA4MjU5NzI1MX0.iTV99bkvPjwpbm1qM9TgHfqoL0Zs6u2u0OLqmCnwDw4";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/***********************
- * PASSWORD PROTECTION
- ***********************/
+/************** PASSWORD **************/
 const PASSWORD = "mySecret123";
 
 window.checkPassword = function () {
-  const input = document.getElementById("passwordInput").value;
-  const error = document.getElementById("authError");
-
-  if (input === PASSWORD) {
+  const val = document.getElementById("passwordInput").value;
+  if (val === PASSWORD) {
     document.getElementById("authOverlay").style.display = "none";
   } else {
-    error.innerText = "Wrong password ❌";
+    document.getElementById("authError").innerText = "Wrong password ❌";
   }
 };
 
-/***********************
- * GLOBALS
- ***********************/
+/************** GLOBALS **************/
 let calendar;
 let editingEvent = null;
 let selectedDate = null;
 
-const eventColors = ["#1e3a8a", "#7c2d12", "#065f46", "#581c87", "#9f1239"];
+const colors = ["#1e3a8a", "#065f46", "#7c2d12", "#581c87"];
 
-/***********************
- * TIME DROPDOWNS
- ***********************/
-function populateTimeDropdowns() {
+/************** TIME DROPDOWNS **************/
+function populateTimes() {
   const from = document.getElementById("eventFrom");
   const to = document.getElementById("eventTo");
 
-  from.innerHTML = "";
-  to.innerHTML = "";
-
   for (let h = 0; h < 24; h++) {
     for (let m of ["00", "30"]) {
-      const val = `${String(h).padStart(2, "0")}:${m}`;
-      from.add(new Option(val, val));
-      to.add(new Option(val, val));
+      const t = `${String(h).padStart(2, "0")}:${m}`;
+      from.add(new Option(t, t));
+      to.add(new Option(t, t));
     }
   }
 
@@ -54,23 +44,7 @@ function populateTimeDropdowns() {
   to.value = "11:00";
 }
 
-/***********************
- * DATA ACCESS
- ***********************/
-async function loadEvents() {
-  const { data, error } = await supabaseClient.from("events").select("*");
-
-  if (error) {
-    console.error(error);
-    return [];
-  }
-
-  return data;
-}
-
-/***********************
- * MODAL CONTROLS
- ***********************/
+/************** MODAL **************/
 window.closeModal = function () {
   editingEvent = null;
   document.getElementById("deleteBtn").style.display = "none";
@@ -78,15 +52,15 @@ window.closeModal = function () {
 };
 
 window.saveEvent = async function () {
-  const title = document.getElementById("eventTitle").value;
-  const from = document.getElementById("eventFrom").value;
-  const to = document.getElementById("eventTo").value;
+  const title = eventTitle.value;
+  const from = eventFrom.value;
+  const to = eventTo.value;
 
-  if (!title || !from || !to) return;
+  if (!title) return;
 
   const color =
     editingEvent?.backgroundColor ||
-    eventColors[Math.floor(Math.random() * eventColors.length)];
+    colors[Math.floor(Math.random() * colors.length)];
 
   if (editingEvent) {
     editingEvent.setProp("title", title);
@@ -112,13 +86,7 @@ window.saveEvent = async function () {
       .select()
       .single();
 
-    calendar.addEvent({
-      id: data.id,
-      title: data.title,
-      start: data.start,
-      end: data.end,
-      color: data.color,
-    });
+    calendar.addEvent(data);
   }
 
   closeModal();
@@ -127,62 +95,48 @@ window.saveEvent = async function () {
 window.deleteEvent = async function () {
   if (!editingEvent) return;
 
-  if (confirm("Delete this event?")) {
-    await supabaseClient.from("events").delete().eq("id", editingEvent.id);
+  await supabaseClient.from("events").delete().eq("id", editingEvent.id);
 
-    editingEvent.remove();
-    editingEvent = null;
-  }
-
+  editingEvent.remove();
   closeModal();
 };
 
-/***********************
- * CALENDAR INIT
- ***********************/
+/************** INIT **************/
 document.addEventListener("DOMContentLoaded", async function () {
-  populateTimeDropdowns();
+  populateTimes();
 
-  const calendarEl = document.getElementById("calendar");
-  const events = await loadEvents();
+  const { data } = await supabaseClient.from("events").select("*");
 
-  calendar = new FullCalendar.Calendar(calendarEl, {
+  calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
     initialView: "dayGridMonth",
     headerToolbar: {
       left: "prev,next today",
       center: "title",
       right: "",
     },
-    events: events,
+    events: data,
 
     dateClick(info) {
       selectedDate = info.dateStr;
       editingEvent = null;
 
-      document.getElementById("eventTitle").value = "";
-      document.getElementById("eventFrom").value = "10:00";
-      document.getElementById("eventTo").value = "11:00";
-      document.getElementById("deleteBtn").style.display = "none";
-
-      document.getElementById("eventModal").style.display = "flex";
+      eventTitle.value = "";
+      deleteBtn.style.display = "none";
+      eventModal.style.display = "flex";
     },
 
     eventClick(info) {
       editingEvent = info.event;
+      const s = info.event.start;
+      const e = info.event.end;
 
-      const start = info.event.start;
-      const end = info.event.end;
+      selectedDate = s.toISOString().split("T")[0];
+      eventTitle.value = info.event.title;
+      eventFrom.value = s.toTimeString().slice(0, 5);
+      eventTo.value = e.toTimeString().slice(0, 5);
 
-      selectedDate = start.toISOString().split("T")[0];
-
-      document.getElementById("eventTitle").value = info.event.title;
-      document.getElementById("eventFrom").value = start
-        .toTimeString()
-        .slice(0, 5);
-      document.getElementById("eventTo").value = end.toTimeString().slice(0, 5);
-
-      document.getElementById("deleteBtn").style.display = "inline-block";
-      document.getElementById("eventModal").style.display = "flex";
+      deleteBtn.style.display = "inline-block";
+      eventModal.style.display = "flex";
     },
   });
 

@@ -1,92 +1,76 @@
 body {
-  background: #f4f6fb;
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  background: #f6f7fb;
+  margin: 0;
+  padding: 20px;
 }
 
-/* Calendar container */
+h1 {
+  text-align: center;
+}
+
+/* CALENDAR */
 #calendar {
   max-width: 900px;
-  margin: 40px auto;
-  background: transparent;
+  margin: 20px auto;
+  background: white;
   padding: 15px;
-  border-radius: 14px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-/* MONTH BACKGROUND COLORS */
-.fc-month-1 .fc-view-harness {
-  background: #fdf6ec;
-}
-.fc-month-2 .fc-view-harness {
-  background: #f0f7ff;
-}
-.fc-month-3 .fc-view-harness {
-  background: #f3fbf6;
-}
-.fc-month-4 .fc-view-harness {
-  background: #fff5f7;
-}
-.fc-month-5 .fc-view-harness {
-  background: #f6f4ff;
-}
-.fc-month-6 .fc-view-harness {
-  background: #f2fbff;
-}
-.fc-month-7 .fc-view-harness {
-  background: #fff9f0;
-}
-.fc-month-8 .fc-view-harness {
-  background: #f4fff6;
-}
-.fc-month-9 .fc-view-harness {
-  background: #f7f7f7;
-}
-.fc-month-10 .fc-view-harness {
-  background: #fff4f4;
-}
-.fc-month-11 .fc-view-harness {
-  background: #f3f6ff;
-}
-.fc-month-12 .fc-view-harness {
-  background: #fdf7ff;
+/* PASSWORD OVERLAY */
+#authOverlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
 }
 
-/* Event look */
-.fc-event {
-  border: none;
-  border-radius: 6px;
-  font-size: 0.85em;
-  padding: 2px;
+.auth-box {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  width: 300px;
+  text-align: center;
 }
 
-/* MODAL OVERLAY */
+.auth-box input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.auth-box button {
+  margin-top: 15px;
+  padding: 8px 16px;
+}
+
+/* MODAL */
 .modal {
   display: none;
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
-  z-index: 9999; /* VERY IMPORTANT */
+  z-index: 9999;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* MODAL BOX */
 .modal-content {
   background: white;
   padding: 20px;
   width: 320px;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  pointer-events: auto; /* ensure clickable */
-}
-
-.modal-content h3 {
-  margin-top: 0;
 }
 
 .modal-content label {
   display: block;
-  margin-top: 12px;
-  font-size: 14px;
+  margin-top: 10px;
 }
 
 .modal-content input,
@@ -94,15 +78,15 @@ body {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
-  font-size: 14px;
 }
 
 .modal-actions {
-  margin-top: 18px;
+  margin-top: 15px;
   text-align: right;
 }
 
-.modal-actions button {
-  padding: 6px 12px;
-  margin-left: 8px;
+#deleteBtn {
+  background: #dc2626;
+  color: white;
+  display: none;
 }

@@ -7,35 +7,23 @@
       href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css"
       rel="stylesheet"
     />
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
     <style>
       body {
-        font-family: "Poppins", system-ui;
-        background: linear-gradient(135deg, #fdfbfb, #ebedee);
+        font-family: system-ui;
+        background: #fdfbfb;
         text-align: center;
         padding: 20px;
-      }
-
-      h1 {
-        margin-bottom: 5px;
       }
 
       #calendar {
         max-width: 900px;
         margin: auto;
-        background: white;
-        border-radius: 18px;
+        border-radius: 16px;
         padding: 15px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-      }
-
-      .fc-event {
-        border-radius: 10px;
-        font-size: 13px;
-        padding: 4px 6px;
+        background: white;
       }
 
       .fc-month-1 #calendar {
@@ -79,25 +67,24 @@
 
   <body>
     <h1>✨ My Availability</h1>
-    <p>Here’s how my days look 😊</p>
-
     <div id="calendar"></div>
 
     <script>
-      const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co";
-      const SUPABASE_ANON_KEY = "YOUR_PUBLIC_ANON_KEY";
+      const SUPABASE_URL = "https://ubrpgbnspdlgpcdlwluc.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVicnBnYm5zcGRsZ3BjZGx3bHVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwMjEyNTEsImV4cCI6MjA4MjU5NzI1MX0.iTV99bkvPjwpbm1qM9TgHfqoL0Zs6u2u0OLqmCnwDw4";
 
       const supabaseClient = supabase.createClient(
         SUPABASE_URL,
         SUPABASE_ANON_KEY
       );
 
-      function applyMonthColor(calendar) {
-        const month = calendar.getDate().getMonth() + 1;
-        document.body.className = `fc-month-${month}`;
+      function applyMonth(calendar) {
+        document.body.className =
+          "fc-month-" + (calendar.getDate().getMonth() + 1);
       }
 
-      document.addEventListener("DOMContentLoaded", async function () {
+      document.addEventListener("DOMContentLoaded", async () => {
         const { data } = await supabaseClient.from("events").select("*");
 
         const calendar = new FullCalendar.Calendar(
@@ -110,16 +97,14 @@
               right: "",
             },
             events: data,
-            editable: false,
-            selectable: false,
             datesSet() {
-              applyMonthColor(calendar);
+              applyMonth(calendar);
             },
           }
         );
 
         calendar.render();
-        applyMonthColor(calendar);
+        applyMonth(calendar);
       });
     </script>
   </body>

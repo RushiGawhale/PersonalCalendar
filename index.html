@@ -1,26 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>My Calendar</title>
+    <title>My Personal Calendar</title>
 
     <!-- FullCalendar CSS -->
     <link
-      href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.css"
+      href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css"
       rel="stylesheet"
     />
+
+    <!-- App CSS -->
     <link rel="stylesheet" href="css/style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase-js@2"></script>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- FullCalendar -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+    <!-- App JS -->
+    <script src="js/calendar.js" defer></script>
   </head>
+
   <body>
-    <h2 style="text-align: center">📅 My Personal Calendar</h2>
+    <!-- PASSWORD OVERLAY -->
+    <div id="authOverlay">
+      <div class="auth-box">
+        <h2>🔒 Private Calendar</h2>
+        <input
+          type="password"
+          id="passwordInput"
+          placeholder="Enter password"
+        />
+        <button onclick="checkPassword()">Enter</button>
+        <p id="authError"></p>
+      </div>
+    </div>
+
+    <h1>My Personal Calendar</h1>
+
     <div id="calendar"></div>
 
+    <!-- EVENT MODAL -->
     <div id="eventModal" class="modal">
       <div class="modal-content">
-        <h3>Add Event</h3>
+        <h3>Add / Edit Event</h3>
 
-        <label>Event Name</label>
+        <label>Event Title</label>
         <input type="text" id="eventTitle" />
 
         <label>From</label>
@@ -31,17 +58,10 @@
 
         <div class="modal-actions">
           <button onclick="closeModal()">Cancel</button>
+          <button id="deleteBtn" onclick="deleteEvent()">Delete</button>
           <button onclick="saveEvent()">Save</button>
-          <button id="deleteBtn" style="display: none" onclick="deleteEvent()">
-            Delete
-          </button>
         </div>
       </div>
     </div>
-    <!-- FullCalendar JS -->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.js"></script>
-
-    <!-- Your JS -->
-    <script src="js/calendar.js"></script>
   </body>
 </html>
