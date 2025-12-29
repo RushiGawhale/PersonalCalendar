@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rushikesh’s Availability</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/readonly.css" />
+  </head>
+
+  <body>
+    <h1>📅 Rushikesh’s Availability</h1>
+    <p class="subtitle">Here’s what my days look like ✨</p>
+
+    <div id="calendar"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script>
+      function applyMonthColor(calendar) {
+        const month = calendar.getDate().getMonth() + 1;
+        document.body.className = `fc-month-${month}`;
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        const events =
+          JSON.parse(localStorage.getItem("myCalendarEvents")) || [];
+
+        const calendar = new FullCalendar.Calendar(
+          document.getElementById("calendar"),
+          {
+            initialView: "dayGridMonth",
+            headerToolbar: {
+              left: "prev,next",
+              center: "title",
+              right: "",
+            },
+            events: events,
+            datesSet(info) {
+              applyMonthColor(calendar);
+            },
+          }
+        );
+
+        calendar.render();
+        applyMonthColor(calendar);
+
+        calendar.render();
+      });
+    </script>
+  </body>
+</html>
